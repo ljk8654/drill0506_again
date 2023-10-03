@@ -1,10 +1,12 @@
 from pico2d import *
-
+import random
 TUK_WIDTH, TUK_HEIGHT = 1280, 1024
 
 
 def load_resource():
     global TUK_ground, character
+    global arrow
+    arrow = load_image('hand_arrow.png')
     TUK_ground = load_image('TUK_GROUND.png')
     character = load_image('animation_sheet.png')
 
@@ -22,19 +24,23 @@ def handle_events():
 
 def reset_world():
     global running, x, y, frame
+    global hx, hy
     running = True
     x, y = TUK_WIDTH // 2, TUK_HEIGHT // 2
     frame = 0
 
+    # hx, hy = TUK_WIDTH - 150, TUK_HEIGHT - 150
+    hx, hy = random.randint(0, TUK_WIDTH), random.randint(0,TUK_HEIGHT)
 
 def render_world():
     clear_canvas()
     TUK_ground.draw(TUK_WIDTH // 2, TUK_HEIGHT // 2)
+    arrow.draw(hx,hy)
     character.clip_draw(frame * 100, 100 * 1, 100, 100, x, y)
     update_canvas()
 
 
-def udate_world():
+def update_world():
     global frame
     frame = (frame + 1) % 8
 
@@ -47,6 +53,6 @@ reset_world()
 while running:
     render_world()  # 월드의 현재 내용을 그린다
     handle_events()  # 사용자의 입력을 받아들인다.
-    udate_world()  # 원드 안의 객체들의 상호작용을 계산하고 업데이트를 한다
+    update_world()  # 원드 안의 객체들의 상호작용을 계산하고 업데이트를 한다
 
 close_canvas()
